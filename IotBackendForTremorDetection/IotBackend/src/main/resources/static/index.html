@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensor Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Tremor Detection Dashboard</h1>
+        <p>Real-time accelerometer monitoring system</p>
+    </div>
+
+    <div class="connection-status" id="connectionStatus">
+        <div class="spinner"></div>
+        Connecting...
+    </div>
+
+    <div class="dashboard">
+        <div class="card">
+            <h3>Current Sensor Readings</h3>
+            <div class="sensor-grid">
+                <div class="sensor-item">
+                    <div class="sensor-label">X-Axis</div>
+                    <div class="sensor-value" id="ax">-</div>
+                </div>
+                <div class="sensor-item">
+                    <div class="sensor-label">Y-Axis</div>
+                    <div class="sensor-value" id="ay">-</div>
+                </div>
+                <div class="sensor-item">
+                    <div class="sensor-label">Z-Axis</div>
+                    <div class="sensor-value" id="az">-</div>
+                </div>
+                <div class="sensor-item">
+                    <div class="sensor-label">Magnitude</div>
+                    <div class="sensor-value" id="accelMag">-</div>
+                </div>
+                <div class="sensor-item">
+                    <div class="sensor-label">Delta A</div>
+                    <div class="sensor-value" id="deltaA">-</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>System Status</h3>
+            <div class="status-section">
+                <div class="status-indicator" id="statusIndicator">
+                    Waiting for data...
+                </div>
+                <div class="timestamp" id="timestamp">
+                    Last updated: -
+                </div>
+            </div>
+
+            <div style="margin-top: 30px;">
+                <h4 style="color: #4a5568; margin-bottom: 15px;">Detection Thresholds</h4>
+                <div style="font-size: 0.9rem; color: #718096; line-height: 1.6;">
+                    <div>Normal: < 1,000</div>
+                    <div>Mild Movement: 1,000 - 4,000</div>
+                    <div>Tremor Detected: > 4,000</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
