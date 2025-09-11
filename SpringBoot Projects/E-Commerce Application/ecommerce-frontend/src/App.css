@@ -1,0 +1,229 @@
+/* :root {
+  --navbar-background: white;
+  --navbar-text: black;
+} */
+
+#root {
+  max-width: 100%;
+  /* max-height: 100%; */
+  margin: 0 auto;
+  background-color: var(--root_background);
+}
+
+.light-theme{
+  --root_background: white;
+  --body_background: white;
+  --navbar_background: white;
+  --navbar_text : black;
+  /* --body_color : rgb(47, 45, 45); */
+  --body_color : white;
+  --link_color : rgb(0, 0, 0);
+  --link_hover_color : rgb(200, 200, 200);
+  --link_visited_color : purple;
+  --para-clr:black;
+  --cart_body_color: white;
+  --quantity-clr: rgb(0, 0, 0);
+  --button-clr: black;
+  --card-bg-clr: white;
+  --btn-bg: var(--navbar_background);
+  --btn-clr: black;
+  --category-hvr: rgb(200, 200, 200);
+  --search_result-bg: rgb(239, 239, 239);
+  --hr_line_card: black;
+}
+.dark-theme{
+  --root_background: #1f1f1f;
+  --body_background: #1f1f1f;
+  --navbar_background: black;
+  --navbar_text : white;
+    /* --body_color : white; */
+    --body_color : black;
+    --link_color : rgb(255, 255, 255);
+    --link_hover_color : rgb(80, 80, 80);
+    --link_visited_color : purple;
+    --para-clr:white;
+    --cart_body_color: rgb(36, 35, 35);
+    --quantity-clr: rgb(255, 255, 255);
+    --button-clr: white;
+    --card-bg-clr: #2c2b2b;
+    --btn-bg: var(--navbar_background);
+    --btn-clr: white;
+    --category-hvr: rgb(115, 115, 115);
+    --search_result-bg: rgb(49, 49, 49);
+    --hr_line_card: rgb(255, 255, 255)
+}
+
+body{
+  padding-top: 70px;
+  color: var(--navbar_text);
+  background-color: var(--body_background);
+}
+
+header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+/* Navbar Styles */
+
+/* ? Navbar */
+.navbar{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: var(--navbar_background);
+  color: var(--navbar_text);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  height: 70px;
+}
+
+.nav-links{
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-links a{
+  padding: 5px 15px;
+  border-radius: 5px;
+  text-decoration: none;
+  color: var(--navbar_text);
+  background-color: var(--navbar_background);
+  transition: background-color 0.3s ease;
+}
+
+.nav-links a:not(.navbar-brand):hover{
+  background-color: var(--link_hover_color);
+}
+
+.navbar-brand{
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.0rem;
+  color: var(--navbar_text);
+  transition: color 0s ease;
+}
+
+.navbar-brand:hover{
+  color: var(--navbar_text)
+}
+
+.theme-btn{
+  padding: 5px 5px;
+  border: none;
+  background-color: var(--navbar_background);
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.theme-btn:hover{
+  background-color: var(--link_hover_color);
+}
+
+.cart-search-bar{
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.cart{
+  background-color: var(--navbar_background);
+  border-radius: 5px;
+  padding: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.cart:hover{
+  background-color: var(--link_hover_color);
+}
+
+.search{
+  padding: 0.3rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid var(--link_hover_color);
+  outline: none;
+  background-color: var(--body_background);
+  color: var(--navbar_text);
+  caret-color: var(--navbar_text);
+}
+
+/* ? Products in Home */
+
+.grid{
+  margin: 0 auto;
+  max-width: 90%;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: flex-start;
+  padding: 3rem;
+  grid-template-columns: 0.5fr 0.5fr 0.5fr 0.5fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  row-gap: 3rem;
+  background: var(--body_background);
+  align-items: stretch;
+  padding-top: 100px;
+  border-radius: 0.5rem;
+}
+
+.card{
+  width: 270px;
+  height: 210px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  background-color: var(--card-bg-clr);
+  color: var(--navbar_text);
+}
+
+.card-body{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 15px;
+}
+.card-body button{
+  margin: 0 auto;
+  width: 120px;
+  padding: 10px 1px;
+  border-radius: 2rem;
+  border: none;
+  background-color: #0d86ff;
+  color: white;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.card-body button:hover{
+  background-color: #0066cd;
+}
+
+.card-title{
+  margin: 0 0 10px 0;
+  font-size: 1.2rem;
+}
+
+.card-brand{
+  font-size: 1.2rem;
+  font-weight: 350;
+  color: var(--navbar_text);
+}
+
+.hr-line{
+  margin: 10px 0;
+}
+
+.card-text{
+  font-weight: 600;
+  font-size: 1.1rem;margin-bottom: 5px;
+}
