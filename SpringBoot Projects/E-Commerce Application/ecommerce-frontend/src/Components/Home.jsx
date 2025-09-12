@@ -1,24 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import axios from 'axios'
+import AppContext from '../Contexts/Context';
+import { Link } from 'react-router-dom';
 
 const Home = () => {
 
-  const [products, setProducts] = useState([]);
-  const [isError, setIsError] = useState(false);
+  const { data, isError, addToCart, refreshData } = useContext(AppContext);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("http://localhost:8080/api/products");
-        setProducts(response.data);
-        console.log(products);
-      } catch (error) {
-        console.error("Error fetching data: ", error);
-        setIsError(true);
-      }
-    }
-    fetchData();
-  }, [])
+    refreshData();
+  }, [refreshData])
 
   if(isError){
     return (
@@ -38,21 +29,23 @@ const Home = () => {
   return (
     <>
       <div className='grid'>
-        {products.map((product) => (
-          <div className='card'>
-            <div className='card-body'>
-              <div>
-                <h5 className='card-title'>{product.name.toUpperCase()}</h5>
-                <i className='card-brand'>{"by " + product.brand}</i>
+        {data.map((product) => (
+          <div className='card' key={product.id}>
+            <Link to={`/product/${product.id}`} style={{textDecoration: "none", color: "inherit"}}>
+              <div className='card-body'>
+                <div>
+                  <h5 className='card-title'>{product.name.toUpperCase()}</h5>
+                  <i className='card-brand'>{"by " + product.brand}</i>
+                </div>
+                <hr className='hr-line'/>
+                <div className='home-card-price'>
+                  <h5 className='card-text'>
+                    <i className='bi bi-currency-rupee'>{product.price}</i>
+                  </h5>
+                </div>
+                <button className='add-to-cart-btn' onClick={(e) => {e.preventDefault(); addToCart(product);}}>Add to cart</button>
               </div>
-              <hr className='hr-line'/>
-              <div className='home-card-price'>
-                <h5 className='card-text'>
-                  <i className='bi bi-currency-rupee'>{product.price}</i>
-                </h5>
-              </div>
-              <button className='btn-hover color-9'>Add to cart</button>
-            </div>
+            </Link>
           </div>
         ))}
       </div>

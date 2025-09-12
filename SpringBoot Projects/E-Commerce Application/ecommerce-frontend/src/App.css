@@ -26,7 +26,8 @@
   --button-clr: black;
   --card-bg-clr: white;
   --btn-bg: var(--navbar_background);
-  --btn-clr: black;
+  --btn-clr: #0d86ff;
+  --btn-clr-hover: #0066cd;
   --category-hvr: rgb(200, 200, 200);
   --search_result-bg: rgb(239, 239, 239);
   --hr_line_card: black;
@@ -47,7 +48,8 @@
     --button-clr: white;
     --card-bg-clr: #2c2b2b;
     --btn-bg: var(--navbar_background);
-    --btn-clr: white;
+    --btn-clr: #0d86ff;
+    --btn-clr-hover: #0066cd;
     --category-hvr: rgb(115, 115, 115);
     --search_result-bg: rgb(49, 49, 49);
     --hr_line_card: rgb(255, 255, 255)
@@ -132,15 +134,17 @@ header {
   align-items: center;
 }
 
-.cart{
+.cart-btn{
   background-color: var(--navbar_background);
+  text-decoration: none;
+  color: var(--navbar_text);
   border-radius: 5px;
   padding: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-.cart:hover{
+.cart-btn:hover{
   background-color: var(--link_hover_color);
 }
 
@@ -192,20 +196,21 @@ header {
   justify-content: space-between;
   padding: 15px;
 }
-.card-body button{
+
+/* .card-body button{
   margin: 0 auto;
   width: 120px;
   padding: 10px 1px;
   border-radius: 2rem;
   border: none;
-  background-color: #0d86ff;
+  background-color: var(--btn-clr);
   color: white;
   font-weight: bold;
   transition: background-color 0.3s ease;
-}
+} */
 
 .card-body button:hover{
-  background-color: #0066cd;
+  background-color: var(--btn-clr-hover);
 }
 
 .card-title{
@@ -226,4 +231,148 @@ header {
 .card-text{
   font-weight: 600;
   font-size: 1.1rem;margin-bottom: 5px;
+}
+
+/* ? Product Page  */
+
+.containers{
+  max-width: 1200px;
+  margin: 2rem auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem;
+  background-color: var(--card-bg-clr);
+  border-radius: 1rem;
+}
+
+.right-column{
+  background-color: var(--card-bg-clr);
+  padding: 2rem;
+  border-radius: 0.5rem;
+  width: 100%;
+  max-width: 800px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.product-description{
+  margin-bottom: 2rem;
+}
+
+.product-description span{
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--navbar_text);
+}
+
+.product-description h1{
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 0.5rem 0;
+  color: var(--navbar_text);
+}
+
+.product-description h5{
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: var(--navbar_text);
+}
+
+.product-description p{
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--navbar_text);
+}
+
+.product-price{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.product-price span{
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.add-to-cart-btn{
+  margin: 0 20px 0px 0px;
+  margin-top: 20px;
+  width: 120px;
+  padding: 10px 1px;
+  border-radius: 2rem;
+  border: none;
+  background-color: var(--btn-clr);
+  color: white;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.add-to-cart-btn:hover{
+  background-color: var(--btn-clr-hover);
+}
+
+.disabled-btn{
+  margin: 0 auto;
+  width: 120px;
+  padding: 10px 1px;
+  border-radius: 2rem;
+  border: none;
+  background-color: var(--body_background);
+  color: white;
+  font-weight: bold;
+  cursor: not-allowed;
+}
+
+.product-price h6{
+  margin-top: 1rem;
+  font-size: 1rem;
+}
+
+.release-date{
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: var(--navbar_text);
+}
+
+.release-date h6{
+  margin: 0;
+}
+
+.update-delete-btn {
+  margin: 0 20px 0px 0px;
+}
+
+.update-btn{
+  margin: 0 20px 0px 0px;
+  width: 120px;
+  padding: 10px 1px;
+  border-radius: 2rem;
+  border: none;
+  background-color: rgb(74, 255, 74);
+  color: white;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.update-btn:hover{
+  background-color: green;
+}
+
+.delete-btn{
+  margin: 0 20px 0px 0px;
+  width: 120px;
+  padding: 10px 1px;
+  border-radius: 2rem;
+  border: none;
+  background-color: red;
+  color: white;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.delete-btn:hover{
+  background-color: rgb(161, 0, 0);
 }

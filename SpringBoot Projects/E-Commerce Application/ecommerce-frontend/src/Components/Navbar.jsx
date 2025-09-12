@@ -19,18 +19,20 @@ const Navbar = () => {
     document.body.className = theme;
   }, [theme])
 
+
+
   return (
     <>
       <header style={{ position: "fixed", top: 0, width: "100%", zIndex: 1000 }}>
         <nav className='navbar'>
           <div className='nav-links'>
-            <a className='navbar-brand' href="https://github.com/JitheshKrishnan">JKShadow</a>
+            <a href="https://github.com/JitheshKrishnan" className='navbar-brand'>JKShadow</a>
             <a href="/">Home</a>
             <a href="/add_product">Add Product</a>
             <a href="/">Categories</a>
           </div>
           <div className='cart-search-bar'>
-            <span className='cart'>🛒 Cart</span>
+            <a href='/cart' className='cart-btn'>🛒 Cart</a>
             <input className='search' type="search" placeholder='Search' aria-label='Search'/>
             <button onClick={toggleTheme} className='theme-btn'>{theme === "dark-theme" ? "🌙" : "☀️"}</button>
           </div>
