@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 const Home = () => {
 
-  const { data, isError, addToCart, refreshData } = useContext(AppContext);
+  const { productsWithImageUrl, isError, addToCart, refreshData } = useContext(AppContext);
 
   useEffect(() => {
     refreshData();
@@ -29,25 +29,26 @@ const Home = () => {
   return (
     <>
       <div className='grid'>
-        {data.map((product) => (
+        {productsWithImageUrl.map((product) => (
           <div className='card' key={product.id}>
             <Link to={`/product/${product.id}`} style={{textDecoration: "none", color: "inherit"}}>
+              <img src={product.imageUrl} alt={product.name} className="card-image" />
               <div className='card-body'>
-                <div>
-                  <h5 className='card-title'>{product.name.toUpperCase()}</h5>
-                  <i className='card-brand'>{"by " + product.brand}</i>
-                </div>
-                <hr className='hr-line'/>
-                <div className='home-card-price'>
-                  <h5 className='card-text'>
-                    <i className='bi bi-currency-rupee'>{product.price}</i>
-                  </h5>
-                </div>
-                <button className='add-to-cart-btn' onClick={(e) => {e.preventDefault(); addToCart(product);}}>Add to cart</button>
+                <h5 className='card-title'>{product.name.toUpperCase()}</h5>
+                <i className='card-brand'>{"by " + product.brand}</i>
+                <h5 className='card-price'>{"$ " + product.price}</h5>
               </div>
             </Link>
+            <button 
+            className={`${!product.available
+            ? "home-disabled-btn"
+            : "home-add-to-cart-btn"}`}
+            onClick={(e) => {
+              e.preventDefault(); addToCart(product);
+            }}
+            disabled={!product.available}>{product.available ? "Add to cart" : "Out of stock"}</button>
           </div>
-        ))}
+        ))}   
       </div>
     </>
   )

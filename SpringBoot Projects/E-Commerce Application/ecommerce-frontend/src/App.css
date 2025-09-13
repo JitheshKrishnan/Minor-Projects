@@ -179,13 +179,13 @@ header {
 
 .card{
   width: 270px;
-  height: 210px;
+  height: 350px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   border-radius: 10px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: space-between;
   background-color: var(--card-bg-clr);
   color: var(--navbar_text);
 }
@@ -193,12 +193,23 @@ header {
 .card-body{
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  gap: 10px;
+  height: 100%;
   padding: 15px;
 }
 
-/* .card-body button{
-  margin: 0 auto;
+.card-image {
+  width: 100%;
+  height: 150px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  object-fit: cover;
+  display: block;
+}
+
+.home-add-to-cart-btn{
+  margin-bottom: 20px;
+  align-self: center;
   width: 120px;
   padding: 10px 1px;
   border-radius: 2rem;
@@ -207,14 +218,28 @@ header {
   color: white;
   font-weight: bold;
   transition: background-color 0.3s ease;
-} */
+}
 
-.card-body button:hover{
+.home-disabled-btn{
+  margin-bottom: 20px;
+  align-self: center;
+  width: 120px;
+  padding: 10px 1px;
+  border-radius: 2rem;
+  border: none;
+  background-color: var(--body_background);
+  color: white;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  cursor: not-allowed;
+}
+
+.home-add-to-cart-btn:hover{
   background-color: var(--btn-clr-hover);
 }
 
 .card-title{
-  margin: 0 0 10px 0;
+  margin: 0;
   font-size: 1.2rem;
 }
 
@@ -224,11 +249,7 @@ header {
   color: var(--navbar_text);
 }
 
-.hr-line{
-  margin: 10px 0;
-}
-
-.card-text{
+.card-price{
   font-weight: 600;
   font-size: 1.1rem;margin-bottom: 5px;
 }

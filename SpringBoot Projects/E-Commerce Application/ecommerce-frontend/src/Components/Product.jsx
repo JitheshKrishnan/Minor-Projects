@@ -52,7 +52,7 @@ const Product = () => {
                         <p>{product.description}</p>
                     </div>
                     <div className='product-price'>
-                        <span>{"$" + product.price}</span>
+                        <span>{"$ " + product.price}</span>
                         <button 
                         className={`${!product.available ? "disabled-btn" : "add-to-cart-btn"}`}
                         onClick={() => addToCart(product)}
