@@ -1,194 +1,172 @@
 import axios from 'axios';
-import React, {createContext, useState, useEffect, useCallback} from 'react'
+import React, { createContext, useState, useEffect, useCallback } from 'react';
 
+const AppContext = createContext({});
 
-const AppContext = createContext({
-    data: [],
-    cart: [],
-    product: null,
-    productsWithImageUrl: [],
-    isError: null,
-    selectedCategory: "",
-    clearCart: () => {},
-    refreshData: () => {},
-    fetchProductById: (id) => {},
-    fetchImageByProductId: (product) => {},
-    addProduct: (productData, imageFile) => {},
-    addToCart: (product) => {},
-    decreaseQuantityFromCart: (product) => {},
-    removeFromCart: (productId) => {},
-    handleCategorySelect: (category) => {},
-})
-
-export const AppProvider = ({children}) => {
-    const [data, setData] = useState([]);
+export const AppProvider = ({ children }) => {
+    const [products, setProducts] = useState([]);
     const [cart, setCart] = useState(JSON.parse(localStorage.getItem('cart')) || []);
-    const [product, setProduct] = useState(null);
-    const [productsWithImageUrl, setProductsWithImageUrl] = useState([]);
-    const [isError, setIsError] = useState(null);
-    const [selectedCategory, setSelectedCategory] = useState("");
+    const [isError, setIsError] = useState(false);
 
-    const refreshData = useCallback(async () => {
+    const refreshProducts = useCallback(async () => {
         try {
             const response = await axios.get("http://localhost:8080/api/products");
-            setData(response.data);
-            console.log("data refreshed");
-            setIsError(false);
-        } catch (error) {
-            console.log(error);
-            setIsError(true);
-        }
-    }, [])
+            const productsWithImages = await Promise.all(
+                response.data.map(async (product) => {
+                    try {
+                        const imgResponse = await axios.get(
+                            `http://localhost:8080/api/product/${product.id}/image`,
+                            { responseType: 'blob' }
+                        );
+                        const imageUrl = imgResponse.data.size
+                            ? URL.createObjectURL(imgResponse.data)
+                            : 'placeholder-image-url';
 
-    const fetchProductById = useCallback(async (id) => {
-        try {
-            const response = await axios.get(`http://localhost:8080/api/product/${id}`);
-            setProduct(response.data);
-            setIsError(false);
-        } catch (error) {
-            console.log(error);
-            setIsError(true);
-        }
-    }, [])
-
-    const fetchImageByProductId = useCallback(async (product) => {
-        try {
-            const response = await axios.get(
-                `http://localhost:8080/api/product/${product.id}/image`,
-                { responseType: "blob" }
+                        return { ...product, imageUrl };
+                    } catch {
+                        return { ...product, imageUrl: 'placeholder-image-url' };
+                    }
+                })
             );
-            if(response.data && response.data.size > 0){
-                const imageUrl = URL.createObjectURL(response.data);
-                return { ...product, imageUrl };
-            }
+            setProducts(productsWithImages);
+            setIsError(false);
         } catch (error) {
-            console.error("Error fetching product image of id: ", product.id, error);
-            return { ...product, imageUrl: "placeholder-image-url"}
+            console.error('Error fetching products:', error);
+            setIsError(true);
         }
-    }, [])
+    }, []);
 
     const addProduct = useCallback(async (productData, imageFile) => {
         try {
-            setIsError(false);
             const formData = new FormData();
             const productBlob = new Blob([JSON.stringify(productData)], {
                 type: 'application/json'
             });
-            
+
             formData.append('product', productBlob);
             formData.append('imageFile', imageFile);
 
-            const response = await axios.post("http://localhost:8080/api/product", formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                }
-            });
+            const response = await axios.post(
+                "http://localhost:8080/api/product",
+                formData,
+                { headers: { 'Content-Type': 'multipart/form-data' } }
+            );
 
-            console.log("product added successfully: ", response.data);
-            alert("Product Added Successfully!");
-            await refreshData();
+            await refreshProducts();
+            setIsError(false);
             return response.data;
         } catch (error) {
-            console.error("Error adding product: ", error);
+            console.error('Error adding product:', error);
             setIsError(true);
             throw error;
         }
-    }, [refreshData])
+    }, [refreshProducts]);
 
-    const handleCategorySelect = (category) => {
-        setSelectedCategory(category);
-    }
+    const updateProduct = useCallback(async (id, productData, imageFile) => {
+        try {
+            const formData = new FormData();
+            const productBlob = new Blob([JSON.stringify(productData)], {
+                type: 'application/json'
+            });
 
-    const addToCart = (product) => {
-        const existingProductIndex = cart.findIndex((item) => item.id === product.id)
-        if(existingProductIndex !== -1){
-            const updatedCart = cart.map((item, index) =>
-                index === existingProductIndex
-                ? {...item, quantity: item.quantity + 1}
-                : item
+            formData.append('product', productBlob);
+            if (imageFile) {
+                formData.append('imageFile', imageFile);
+            }
+
+            //TODO: get string from response
+            const response = await axios.put(
+                `http://localhost:8080/api/product/${id}`,
+                formData,
+                { headers: { 'Content-Type': 'multipart/form-data' } }
             );
-            setCart(updatedCart);
-        }
-        else{
-            const updatedCart = [...cart, {...product, quantity: 1}];
-            setCart(updatedCart);
-        }
-    }
 
-    const decreaseQuantityFromCart = (product) => {
-        // const existingProduct = cart.find(item => item.id === product.id);
-        if(product.quantity > 1){
-            const updatedCart = cart.map((item) => 
-                item.id === product.id
-                    ? {...item, quantity: item.quantity - 1}
-                    : item
+            await refreshProducts();
+            setIsError(false);
+            return response.data;
+        } catch (error) {
+            console.error('Error updating product:', error);
+            setIsError(true);
+            throw error;
+        }
+    }, [refreshProducts]);
+
+    const deleteProduct = useCallback(async (id) => {
+        try {
+            //TODO: get string from response
+            await axios.delete(`http://localhost:8080/api/product/${id}`);
+            await refreshProducts();
+            setIsError(false);
+            return true;
+        } catch (error) {
+            console.error('Error deleting product:', error);
+            setIsError(true);
+            throw error;
+        }
+    }, [refreshProducts]);
+
+    const addToCart = (productId) => {
+        const existingItem = cart.find((item) => item.productId === productId);
+        const updatedCart = existingItem
+            ? cart.map((item) =>
+                  item.productId === productId
+                      ? { ...item, quantity: item.quantity + 1 }
+                      : item
+              )
+            : [...cart, { productId, quantity: 1 }];
+        setCart(updatedCart);
+    };
+
+    const decreaseQuantityFromCart = (productId) => {
+        const existingItem = cart.find((item) => item.productId === productId);
+        if (existingItem && existingItem.quantity > 1) {
+            setCart(
+                cart.map((item) =>
+                    item.productId === productId
+                        ? { ...item, quantity: item.quantity - 1 }
+                        : item
+                )
             );
-            setCart(updatedCart);
+        } else {
+            removeFromCart(productId);
         }
-        else{
-            removeFromCart(product.id);
-        }
-    }
+    };
 
     const removeFromCart = (productId) => {
-        const updatedCart = cart.filter((item) => item.id !== productId);
-        setCart(updatedCart);
-    }
+        setCart(cart.filter((item) => item.productId !== productId));
+    };
 
     const clearCart = () => {
         setCart([]);
-    }
+    };
 
     useEffect(() => {
-        const fetchProductsWithImages = async () => {
-            if(data && data.length > 0){
-                try{
-                    const updatedProducts = await Promise.all(
-                        data.map(async (product) => {
-                            return await fetchImageByProductId(product);
-                        })
-                    );
-                    setProductsWithImageUrl(updatedProducts);
-                    console.log("Products with image updated!");
-                } catch(error){
-                    console.log("Error updating products with image URLs: ", error);
-                    setProductsWithImageUrl([]);
-                }
-            }
-        };
+        refreshProducts();
+    }, [refreshProducts]);
 
-        fetchProductsWithImages();
-    }, [data, fetchImageByProductId])
-    
     useEffect(() => {
-        localStorage.setItem('cart', JSON.stringify(cart))
+        localStorage.setItem('cart', JSON.stringify(cart));
     }, [cart]);
 
-    useEffect(() => {
-        refreshData()
-    }, [refreshData]);
-
     return (
-        <AppContext.Provider value={{
-            data, 
-            cart, 
-            product, 
-            isError, 
-            selectedCategory, 
-            productsWithImageUrl, 
-            clearCart, 
-            refreshData, 
-            addProduct, 
-            addToCart, 
-            decreaseQuantityFromCart, 
-            removeFromCart, 
-            handleCategorySelect, 
-            fetchProductById, 
-            fetchImageByProductId 
-        }}>
+        <AppContext.Provider
+            value={{
+                products,
+                cart,
+                isError,
+                addProduct,
+                updateProduct,
+                deleteProduct,
+                addToCart,
+                decreaseQuantityFromCart,
+                removeFromCart,
+                clearCart,
+                refreshProducts
+            }}
+        >
             {children}
         </AppContext.Provider>
-    )
-}
+    );
+};
 
 export default AppContext;

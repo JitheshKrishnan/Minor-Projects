@@ -3,12 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import AppContext from '../Contexts/Context';
 
 const Cart = () => {
-    const { cart, addToCart, decreaseQuantityFromCart, removeFromCart, clearCart, fetchImageByProductId } = useContext(AppContext);
+    const { cart, products, addToCart, decreaseQuantityFromCart, removeFromCart, clearCart } = useContext(AppContext);
     const navigate = useNavigate();
 
     // Calculate total price
     const calculateTotal = () => {
-        return cart.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2);
+        return cart.reduce((total, item) => {
+            const product = products.find(p => p.id === item.productId);
+            return product ? total + product.price * item.quantity : total;
+        }, 0).toFixed(2);
     };
 
     // Calculate total items
@@ -17,18 +20,14 @@ const Cart = () => {
     };
 
     // Handle quantity increase
-    const increaseQuantity = (product) => {
-        addToCart(product);
+    const increaseQuantity = (productId) => {
+        addToCart(productId);
     };
 
     // Handle quantity decrease
-    const decreaseQuantity = (product) => {
-        decreaseQuantityFromCart(product);
+    const decreaseQuantity = (productId) => {
+        decreaseQuantityFromCart(productId);
     };
-
-    // const getImageUrl = async (product) => {
-    //   const image = await fetchImageByProductId(product.id);
-    // }
 
     const styles = {
         container: {
@@ -332,85 +331,93 @@ const Cart = () => {
                         </button>
                     </div>
 
-                    {cart.map((item) => (
-                        <div key={item.id} style={styles.cartItem}>
-                            <div style={styles.itemImage}>
-                                <img style={{width: "100%", borderRadius: "8px"}} src={item.imageUrl} alt="" />
-                            </div>
+                    {cart.map((item) => {
+                        const product = products.find(p => p.id === item.productId);
+                        if (!product) return null; // Skip if product data not loaded yet
+                        return (
+                            <div key={item.productId} style={styles.cartItem}>
+                                <div style={styles.itemImage}>
+                                    <img
+                                        src={product.imageUrl}
+                                        alt={product.name}
+                                        style={{ width: '100%', borderRadius: '8px' }}
+                                    />
+                                </div>
 
-                            <div style={styles.itemDetails}>
-                                <h3 style={styles.itemName}>{item.name}</h3>
-                                <p style={styles.itemBrand}>{item.brand}</p>
-                                <p style={styles.itemPrice}>${item.price}</p>
-                            </div>
+                                <div style={styles.itemDetails}>
+                                    <h3 style={styles.itemName}>{product.name}</h3>
+                                    <p style={styles.itemBrand}>{product.brand}</p>
+                                    <p style={styles.itemPrice}>${product.price}</p>
+                                </div>
 
-                            <div style={styles.itemControls}>
-                                <div style={styles.quantityControls}>
+                                <div style={styles.itemControls}>
+                                    <div style={styles.quantityControls}>
+                                        <button
+                                            style={styles.quantityButton}
+                                            onClick={() => decreaseQuantity(product.id)}
+                                            onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--btn-clr-hover)'}
+                                            onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--btn-clr)'}
+                                        >
+                                            −
+                                        </button>
+                                        <span style={styles.quantity}>{item.quantity}</span>
+                                        <button
+                                            style={styles.quantityButton}
+                                            onClick={() => increaseQuantity(product.id)}
+                                            onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--btn-clr-hover)'}
+                                            onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--btn-clr)'}
+                                        >
+                                            +
+                                        </button>
+                                    </div>
                                     <button
-                                        style={styles.quantityButton}
-                                        onClick={() => decreaseQuantity(item)}
-                                        onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--btn-clr-hover)'}
-                                        onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--btn-clr)'}
+                                        style={styles.removeButton}
+                                        onClick={() => removeFromCart(product.id)}
+                                        onMouseEnter={(e) => e.target.style.backgroundColor = '#c82333'}
+                                        onMouseLeave={(e) => e.target.style.backgroundColor = '#dc3545'}
                                     >
-                                        −
-                                    </button>
-                                    <span style={styles.quantity}>{item.quantity}</span>
-                                    <button
-                                        style={styles.quantityButton}
-                                        onClick={() => increaseQuantity(item)}
-                                        onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--btn-clr-hover)'}
-                                        onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--btn-clr)'}
-                                    >
-                                        +
+                                        Remove
                                     </button>
                                 </div>
-                                <button
-                                    style={styles.removeButton}
-                                    onClick={() => removeFromCart(item.id)}
-                                    onMouseEnter={(e) => e.target.style.backgroundColor = '#c82333'}
-                                    onMouseLeave={(e) => e.target.style.backgroundColor = '#dc3545'}
-                                >
-                                    Remove
-                                </button>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
 
                 <div style={styles.sidebar}>
                     <h2 style={styles.summaryTitle}>Order Summary</h2>
-                    
+
                     <div style={styles.summaryRow}>
                         <span>Subtotal ({getTotalItems()} items):</span>
                         <span>${calculateTotal()}</span>
                     </div>
-                    
+
                     <div style={styles.summaryRow}>
                         <span>Shipping:</span>
                         <span>Free</span>
                     </div>
-                    
+
                     <div style={styles.summaryRow}>
                         <span>Tax:</span>
                         <span>${(calculateTotal() * 0.08).toFixed(2)}</span>
                     </div>
-                    
+
                     <div style={styles.summaryDivider}></div>
-                    
+
                     <div style={styles.totalRow}>
                         <span>Total:</span>
                         <span>${(parseFloat(calculateTotal()) + parseFloat(calculateTotal()) * 0.08).toFixed(2)}</span>
                     </div>
-                    
+
                     <button
                         style={styles.checkoutButton}
-                        onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--btn-clr-hover)'}
-                        onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--btn-clr)'}
+                        onMouseEnter={(e) => (e.target.style.backgroundColor = 'var(--btn-clr-hover)')}
+                        onMouseLeave={(e) => (e.target.style.backgroundColor = 'var(--btn-clr)')}
                         onClick={() => alert('Checkout functionality coming soon!')}
                     >
                         Proceed to Checkout
                     </button>
-                    
+
                     <button
                         style={styles.continueButton}
                         onClick={() => navigate('/')}
