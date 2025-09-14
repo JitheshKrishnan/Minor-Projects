@@ -36,6 +36,13 @@ public class ProductController {
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    @GetMapping("/products/search")
+    public ResponseEntity<List<Product>> searchProducts(@RequestParam String keyword){
+        System.out.println("Search request received");
+        List<Product> products = productService.searchProducts(keyword);
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+
     @GetMapping("/product/{id}/image")
     public ResponseEntity<byte[]> getImageByProductId(@PathVariable int id){
         Product product = productService.getProductById(id);
@@ -60,7 +67,7 @@ public class ProductController {
     }
 
     @PutMapping("/product/{id}")
-    public ResponseEntity<String> updateProduct(@PathVariable int id, @RequestPart Product product, @RequestPart MultipartFile imageFile){
+    public ResponseEntity<String> updateProduct(@PathVariable int id, @RequestPart Product product, @RequestPart(required = false) MultipartFile imageFile){
         Product updatedProduct = null;
         try {
             updatedProduct = productService.updateProduct(id, product, imageFile);

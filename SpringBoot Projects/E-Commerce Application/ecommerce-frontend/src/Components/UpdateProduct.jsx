@@ -71,10 +71,10 @@ const UpdateProduct = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!imageFile) {
-            alert('Please select an image');
-            return;
-        }
+        // if (!imageFile) {
+        //     alert('Please select an image');
+        //     return;
+        // }
         
         setIsSubmitting(true);
         

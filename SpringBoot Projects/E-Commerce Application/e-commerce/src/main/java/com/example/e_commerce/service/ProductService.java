@@ -31,13 +31,31 @@ public class ProductService {
     }
 
     public Product updateProduct(int id, Product product, MultipartFile imageFile) throws IOException {
-        product.setImageData(imageFile.getBytes());
-        product.setImageName((imageFile.getOriginalFilename()));
-        product.setImageType(imageFile.getContentType());
-        return productRepository.save(product);
+        Product existingProduct = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product Not Found"));
+
+        existingProduct.setName(product.getName());
+        existingProduct.setDescription(product.getDescription());
+        existingProduct.setBrand(product.getBrand());
+        existingProduct.setPrice(product.getPrice());
+        existingProduct.setCategory(product.getCategory());
+        existingProduct.setReleaseDate(product.getReleaseDate());
+        existingProduct.setAvailable(product.isAvailable());
+        existingProduct.setQuantity(product.getQuantity());
+
+        if(imageFile != null && !imageFile.isEmpty()){
+            existingProduct.setImageName((imageFile.getOriginalFilename()));
+            existingProduct.setImageType(imageFile.getContentType());
+            existingProduct.setImageData(imageFile.getBytes());
+        }
+
+        return productRepository.save(existingProduct);
     }
 
     public void deleteProduct(int id) {
         productRepository.deleteById(id);
+    }
+
+    public List<Product> searchProducts(String keyword) {
+        return productRepository.searchProducts(keyword);
     }
 }
