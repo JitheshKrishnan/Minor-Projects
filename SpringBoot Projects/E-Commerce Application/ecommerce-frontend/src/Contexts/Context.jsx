@@ -30,6 +30,7 @@ export const AppProvider = ({ children }) => {
             );
             setProducts(productsWithImages);
             setIsError(false);
+            return productsWithImages;
         } catch (error) {
             console.error('Error fetching products:', error);
             setIsError(true);
@@ -154,6 +155,7 @@ export const AppProvider = ({ children }) => {
                 products,
                 cart,
                 isError,
+                setProducts,
                 addProduct,
                 updateProduct,
                 deleteProduct,
